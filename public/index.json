@@ -1,6 +1,12 @@
 {
-  "updatedAt": "2025-08-28T05:21:37.087Z",
+  "updatedAt": "2025-08-28T05:32:47.052Z",
   "items": [
+    {
+      "slug": "20250828-2508.20096v1",
+      "title": "CODA: Coordinating the Cerebrum and Cerebellum for a Dual-Brain Computer",
+      "date": "2025-08-28T05:32:47.050Z",
+      "path": "posts/20250828-2508.20096v1.md"
+    },
     {
       "slug": "20250828-2508.17924v1",
       "title": "Gaze into the Heart: A Multi-View Video Dataset for rPPG and Health",

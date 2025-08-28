@@ -6,7 +6,7 @@
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Thu, 28 Aug 2025 05:20:51 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 05:31:55 GMT</lastBuildDate>
     <itunes:explicit>false</itunes:explicit>
     <item>
       <title>Gaze into the Heart: A Multi-View Video Dataset for rPPG and Health
@@ -38,6 +38,37 @@
 - 多様な人種や年齢層を考慮したさらなるデータ収集が必要。
 - 公開されたデータセットとモデルは、AI医療アシスタントの開発を加速する可能性があるが、実用化にはさらなる検証が求められる。</description>
       <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.17924v1.mp3" type="audio/mpeg" />
+    </item>
+    <item>
+      <title>CODA: Coordinating the Cerebrum and Cerebellum for a Dual-Brain Computer
+  Use Agent with Decoupled Reinforcement Learning</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.20096v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.20096v1</guid>
+      <pubDate>Thu, 28 Aug 2025 05:31:55 GMT</pubDate>
+      <description># CODA: 脳と小脳を連携させたデュアルブレインコンピュータエージェント
+
+## 背景
+- 自律エージェントは、科学計算などの専門的なドメインにおいて、長期的な計画と正確な実行の両方が求められる。
+- 既存のアプローチは、計画が得意な一般的なエージェントと、実行が得意な専門的なエージェントとの間でトレードオフが存在する。
+
+## 課題
+- 従来の構成フレームワークは静的でトレーニングができず、経験からの適応が難しい。
+- 科学的ドメインにおける高品質データの不足が、これらの制限をさらに悪化させている。
+
+## 手法
+- CODAは、一般的な計画者（Cerebrum）と専門的な実行者（Cerebellum）を統合した新しいトレーニング可能な構成フレームワーク。
+- **ステージ1: 専門化**
+  - 各科学アプリケーションに対して、少数のタスク軌跡から専門的な計画者をトレーニングするために、デカップルGRPOアプローチを適用。
+- **ステージ2: 一般化**
+  - 専門家から得られた成功した軌跡を集約し、最終的な計画者のための監視付きファインチューニングに使用。
+
+## 結果
+- ScienceBoardベンチマークの4つの挑戦的なアプリケーションで評価した結果、CODAはベースラインを大幅に上回り、オープンソースモデルの中で新たな最先端を確立。
+
+## 限界 / 今後の展望
+- CODAは特定の科学的アプリケーションに特化しているため、他のドメインへの適用可能性に関するさらなる研究が必要。
+- 将来的には、より多様なタスクに対する汎用性を高めるための改良が求められる。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.20096v1.mp3" type="audio/mpeg" />
     </item>
   </channel>
 </rss>
