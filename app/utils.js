@@ -72,3 +72,15 @@ export function pickRandom(arr, rnd = Math.random) {
   const idx = Math.floor(rnd() * arr.length)
   return { item: arr[idx], index: idx }
 }
+
+export function uniqueBy(arr, keyFn) {
+  const seen = new Set()
+  const out = []
+  for (const x of arr) {
+    const k = keyFn(x)
+    if (seen.has(k)) continue
+    seen.add(k)
+    out.push(x)
+  }
+  return out
+}

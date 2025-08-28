@@ -14,7 +14,7 @@ function getEnvBool(name, def = false) {
   return def
 }
 
-export async function maybePublishQiita({ slug, entry, markdown, canonicalUrl }) {
+export async function maybePublishQiita({ slug, entry, markdown, canonicalUrl, audioUrl }) {
   const enabled = getEnvBool('QIITA_PUBLISH', false)
   const token = process.env.QIITA_ACCESS_TOKEN
   if (!enabled) return { skipped: 'disabled' }
@@ -33,14 +33,14 @@ export async function maybePublishQiita({ slug, entry, markdown, canonicalUrl })
   const isPrivate = getEnvBool('QIITA_PRIVATE', false)
 
   // Build body: add header with meta + canonical link + audio
-  const audioUrl = canonicalUrl?.replace(/posts\/[^/]+$/, `episodes/${slug}.mp3`)
+  const audio = audioUrl || (canonicalUrl?.includes('viewer.html') ? canonicalUrl.replace(/viewer\.html\?slug=.*$/, `episodes/${slug}.mp3`) : '')
   const header = [
     `> この記事は自動生成されています — ArxivCaster`,
     `> 論文: ${entry.title}`,
     entry.authors?.length ? `> 著者: ${entry.authors.join(', ')}` : '',
     entry.link ? `> arXiv: ${entry.link}` : '',
     canonicalUrl ? `> Canonical: ${canonicalUrl}` : '',
-    audioUrl ? `> Audio: ${audioUrl}` : '',
+    audio ? `> Audio: ${audio}` : '',
     '',
   ]
     .filter(Boolean)
@@ -70,4 +70,3 @@ export async function maybePublishQiita({ slug, entry, markdown, canonicalUrl })
   console.log(`[qiita] posted: ${out.url}`)
   return { url: out.url, id: out.id }
 }
-

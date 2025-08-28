@@ -16,8 +16,8 @@
 ---
 
 ## 生成物 📦
-- `public/episodes/YYYYMMDD.mp3` — 音声エピソード
-- `public/posts/YYYYMMDD.md` — 記事（要約 + 台本全文 + audio 埋め込み）
+- `public/episodes/YYYYMMDD-<arxivId>.mp3` — 音声エピソード
+- `public/posts/YYYYMMDD-<arxivId>.md` — 記事（要約 + 台本全文 + audio 埋め込み）
 - `public/podcast.xml` — RSS フィード（毎回 `<item>` を追記）
 - `public/index.json` — サイト用の投稿一覧（自動再生成）
 - `public/cover.png` — Podcast のカバー画像（Spotify 等で使用）
@@ -98,6 +98,12 @@ npm start
 ## 環境変数 🔧
 - `OPENAI_API_KEY`（必須）: OpenAI APIキー
 - `ARXIV_QUERY`: arXiv 検索クエリ（例: `cat:cs.LG`）
+  - `||` 区切りで複数クエリに対応（それぞれ取得→重複除外→新しい順に結合）
+  - AIエージェント向けおすすめ（`.env.example` にも記載）:
+    - 1本にまとめる場合:
+      `(cat:cs.AI OR cat:cs.MA OR cat:cs.LG OR cat:cs.CL) AND (ti:agent OR ti:"multi-agent" OR all:"LLM agent" OR all:agentic OR all:"tool use" OR all:"tool-use" OR all:planning)`
+    - 複数クエリで分割（推奨）:
+      `(cat:cs.AI OR cat:cs.MA) AND (ti:agent OR abs:agent OR all:agent) || (cat:cs.LG OR cat:cs.CL) AND (all:"LLM agent" OR all:"tool use" OR all:"tool-use" OR all:agentic OR all:"function calling" OR all:planning)`
 - `ARXIV_MAX`: 一度に取得する最大件数（既定 1）
 - `ARXIV_POOL_SIZE`: ランダム選択用の取得プールサイズ（既定 200）
 - `ARXIV_RANDOM_MODE`: ランダムの種類（`daily` = 日替りで決まる固定乱数, `true_random` = 実行毎に変化）
@@ -116,7 +122,7 @@ npm start
 - 記事と台本には「論文タイトル・著者・arXivリンク」を必ず含めます
 - 著作権配慮: 論文本体や図は転載せず、要約とリンクで紹介します
 - 品質ゲート: 要約には必ず「限界 / 今後の展望」を含めます
-- 冪等性: 同日のスラッグ（`YYYYMMDD`）が既に存在するときはスキップします
+- 冪等性: スラッグは `YYYYMMDD-<arxivId>` 形式。既に同スラッグが存在する場合はスキップ（同日に複数本の配信が可能）
 
 ---
 

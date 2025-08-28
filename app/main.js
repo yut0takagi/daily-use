@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { ensureDir, todaySlug, fileExists, joinUrl, assertEnv, seededRng, pickRandom } from './utils.js'
+import { ensureDir, todaySlug, fileExists, joinUrl, assertEnv, seededRng, pickRandom, uniqueBy } from './utils.js'
 import { searchArxiv } from './arxiv.js'
 import { generateSummaryJa, generatePodcastScriptJa, synthesizeTtsMp3 } from './llm.js'
 import { ensureRssTemplate, appendItemToRss } from './rss.js'
@@ -19,36 +19,55 @@ const ARXIV_RANDOM_MODE = (process.env.ARXIV_RANDOM_MODE || 'daily').toLowerCase
 
 async function main() {
   const now = new Date()
-  const slug = todaySlug(now)
   const postsDir = path.join('public', 'posts')
   const episodesDir = path.join('public', 'episodes')
   await ensureDir(postsDir)
   await ensureDir(episodesDir)
-
-  const postPath = path.join(postsDir, `${slug}.md`)
   const FORCE_RUN = String(process.env.FORCE_RUN || '').toLowerCase() === 'true'
-  if (!FORCE_RUN && await fileExists(postPath)) {
-    console.log(`[skip] Already published for ${slug}`)
-    return
-  }
 
   const siteTitle = PODCAST_TITLE
   const siteLink = SITE_BASE_URL || 'https://example.com'
   const siteDescription = PODCAST_DESCRIPTION
   await ensureRssTemplate({ siteTitle, siteLink, siteDescription, author: PODCAST_AUTHOR, imageUrl: PODCAST_IMAGE_URL })
 
-  console.log(`[arxiv] query: ${ARXIV_QUERY}, pool: ${ARXIV_POOL_SIZE}`)
-  const entries = await searchArxiv({ query: ARXIV_QUERY, max: ARXIV_POOL_SIZE })
+  const queries = ARXIV_QUERY.split('||').map((q) => q.trim()).filter(Boolean)
+  console.log(`[arxiv] queries: ${queries.length} item(s), pool: ${ARXIV_POOL_SIZE}`)
+  const perQueryMax = Math.max(50, Math.ceil((ARXIV_POOL_SIZE / queries.length) * 1.4))
+  let allEntries = []
+  for (const q of queries) {
+    try {
+      const part = await searchArxiv({ query: q, max: perQueryMax })
+      allEntries.push(...part)
+    } catch (e) {
+      console.warn(`[arxiv] query failed: ${q} -> ${String(e)}`)
+    }
+  }
+  let entries = uniqueBy(allEntries, (e) => e.id)
+  // Keep freshest first (API is already sorted desc, but merge could change order)
+  entries.sort((a, b) => new Date(b.published || b.updated || 0) - new Date(a.published || a.updated || 0))
+  entries = entries.slice(0, ARXIV_POOL_SIZE)
   if (!entries.length) {
     console.log('No arXiv results')
     return
   }
 
+  const day = todaySlug(now)
   // Pick one entry randomly (deterministic per-day unless true_random)
-  const seedStr = ARXIV_RANDOM_MODE === 'true_random' ? null : `${slug}:${ARXIV_QUERY}`
+  const seedStr = ARXIV_RANDOM_MODE === 'true_random' ? null : `${day}:${ARXIV_QUERY}`
   const rnd = seedStr ? seededRng(seedStr) : Math.random
   const { item: entry, index: chosen } = pickRandom(entries, rnd)
   console.log(`[paper] pick #${chosen + 1}/${entries.length}: ${entry.title}`)
+
+  // Build unique slug allowing multiple per-day using arXiv id
+  const rawId = String(entry.id || '').split('/abs/').pop() || String(entry.id || '').split('/').pop() || 'paper'
+  const safeId = rawId.replace(/[^A-Za-z0-9_.-]/g, '-')
+  const slug = `${day}-${safeId}`.toLowerCase()
+
+  const postPath = path.join(postsDir, `${slug}.md`)
+  if (!FORCE_RUN && await fileExists(postPath)) {
+    console.log(`[skip] Already exists for slug ${slug}`)
+    return
+  }
 
   // Ensure API key is present before LLM/TTS calls
   assertEnv('OPENAI_API_KEY')
@@ -75,7 +94,7 @@ async function main() {
     enclosureUrl: audioUrl,
     pubDate,
     guid: `arxivcaster-${slug}`,
-    link: SITE_BASE_URL ? joinUrl(SITE_BASE_URL, 'posts', `${slug}.html`) : entry.link,
+    link: SITE_BASE_URL ? `${joinUrl(SITE_BASE_URL, 'viewer.html')}?slug=${encodeURIComponent(slug)}` : entry.link,
   })
   console.log('[rss] updated public/podcast.xml')
 
@@ -84,9 +103,9 @@ async function main() {
   console.log('[site] updated public/index.json')
 
   // Optionally publish to Qiita
-  const canonicalUrl = SITE_BASE_URL ? joinUrl(SITE_BASE_URL, 'posts', `${slug}.html`) : ''
+  const canonicalUrl = SITE_BASE_URL ? `${joinUrl(SITE_BASE_URL, 'viewer.html')}?slug=${encodeURIComponent(slug)}` : ''
   try {
-    await maybePublishQiita({ slug, entry, markdown: md, canonicalUrl })
+    await maybePublishQiita({ slug, entry, markdown: md, canonicalUrl, audioUrl })
   } catch (e) {
     console.warn(String(e))
   }
