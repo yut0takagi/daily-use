@@ -107,6 +107,8 @@ npm start
 - `ARXIV_MAX`: 一度に取得する最大件数（既定 1）
 - `ARXIV_POOL_SIZE`: ランダム選択用の取得プールサイズ（既定 200）
 - `ARXIV_RANDOM_MODE`: ランダムの種類（`daily` = 日替りで決まる固定乱数, `true_random` = 実行毎に変化）
+- `DEDUP_HISTORY`: 既掲載の論文IDを除外（既定 `true`）
+- `HISTORY_WINDOW_DAYS`: 除外対象とする履歴の期間（日数、既定 `0`=全期間）
 - `SITE_BASE_URL`: サイトのベースURL（RSSの`enclosure`/記事内リンクで使用）
 - `OPENAI_LLM_MODEL`: LLM モデル（既定 `gpt-4o-mini`）
 - `OPENAI_TTS_MODEL`: TTS モデル（既定 `gpt-4o-mini-tts`）

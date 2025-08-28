@@ -15,6 +15,8 @@ const PODCAST_TITLE = process.env.PODCAST_TITLE || 'ArxivCaster'
 const PODCAST_DESCRIPTION = process.env.PODCAST_DESCRIPTION || 'Daily summaries of arXiv papers with podcast audio.'
 const PODCAST_AUTHOR = process.env.PODCAST_AUTHOR || ''
 const PODCAST_IMAGE_URL = process.env.PODCAST_IMAGE_URL || (SITE_BASE_URL ? joinUrl(SITE_BASE_URL, 'cover.png') : '')
+const DEDUP_HISTORY = String(process.env.DEDUP_HISTORY || 'true').toLowerCase() !== 'false'
+const HISTORY_WINDOW_DAYS = parseInt(process.env.HISTORY_WINDOW_DAYS || '0', 10) // 0 = all time
 const ARXIV_RANDOM_MODE = (process.env.ARXIV_RANDOM_MODE || 'daily').toLowerCase() // 'daily' | 'true_random'
 
 async function main() {
@@ -49,6 +51,17 @@ async function main() {
   if (!entries.length) {
     console.log('No arXiv results')
     return
+  }
+
+  // Filter out entries that were already published (history de-dup)
+  if (DEDUP_HISTORY) {
+    const existingIds = await collectExistingSafeIds(postsDir)
+    const before = entries.length
+    const filtered = entries.filter((e) => !existingIds.has(safeIdFromEntry(e)))
+    if (filtered.length) {
+      entries = filtered
+    }
+    console.log(`[dedup] filtered ${before - entries.length} seen paper(s); remaining ${entries.length}`)
   }
 
   const day = todaySlug(now)
@@ -109,6 +122,43 @@ async function main() {
   } catch (e) {
     console.warn(String(e))
   }
+}
+
+function safeIdFromEntry(e) {
+  const rawId = String(e.id || '').split('/abs/').pop() || String(e.id || '').split('/').pop() || 'paper'
+  return rawId.replace(/[^A-Za-z0-9_.-]/g, '-').toLowerCase()
+}
+
+async function collectExistingSafeIds(postsDir) {
+  const set = new Set()
+  try {
+    const files = await fs.readdir(postsDir)
+    const cutoff = HISTORY_WINDOW_DAYS > 0 ? daysAgoDate(HISTORY_WINDOW_DAYS) : null
+    for (const f of files) {
+      if (!f.endsWith('.md')) continue
+      const base = f.replace(/\.md$/, '')
+      const dash = base.indexOf('-')
+      if (dash <= 0) continue
+      const dayStr = base.slice(0, dash)
+      const id = base.slice(dash + 1).toLowerCase()
+      if (cutoff) {
+        // dayStr is YYYYMMDD in UTC
+        const yyyy = parseInt(dayStr.slice(0, 4), 10)
+        const mm = parseInt(dayStr.slice(4, 6), 10)
+        const dd = parseInt(dayStr.slice(6, 8), 10)
+        const d = new Date(Date.UTC(yyyy, mm - 1, dd))
+        if (d < cutoff) continue
+      }
+      if (id) set.add(id)
+    }
+  } catch {}
+  return set
+}
+
+function daysAgoDate(n) {
+  const now = new Date()
+  const ms = now.getTime() - n * 24 * 60 * 60 * 1000
+  return new Date(ms)
 }
 
 function renderPostMarkdown({ slug, entry, summaryJa, scriptJa, audioUrl }) {
