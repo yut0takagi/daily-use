@@ -6,7 +6,7 @@
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Thu, 28 Aug 2025 05:31:55 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 05:40:42 GMT</lastBuildDate>
     <itunes:explicit>false</itunes:explicit>
     <item>
       <title>Gaze into the Heart: A Multi-View Video Dataset for rPPG and Health
@@ -69,6 +69,38 @@
 - CODAは特定の科学的アプリケーションに特化しているため、他のドメインへの適用可能性に関するさらなる研究が必要。
 - 将来的には、より多様なタスクに対する汎用性を高めるための改良が求められる。</description>
       <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.20096v1.mp3" type="audio/mpeg" />
+    </item>
+    <item>
+      <title>Tackling Federated Unlearning as a Parameter Estimation Problem</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.19065v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.19065v1</guid>
+      <pubDate>Thu, 28 Aug 2025 05:40:42 GMT</pubDate>
+      <description># 論文要約: Federated Unlearningのパラメータ推定問題としての取り組み
+
+## 背景
+- プライバシー規制により、深層学習モデルからのデータ消去が求められる。
+- フェデレーテッドラーニング（FL）では、データがクライアントに留まるため、完全な再学習や協調更新が難しい。
+
+## 課題
+- クライアントのデータを忘却する際の効率的な手法が必要。
+- データ消去後のモデルの整合性を保つことが求められる。
+
+## 手法
+- 情報理論に基づく効率的なFederated Unlearningフレームワークを提案。
+- パラメータ推定問題として漏洩をモデル化。
+- セカンドオーダーのヘッセ行列情報を用いて、忘却対象のデータに最も敏感なパラメータを特定し、選択的にリセット。
+- 最小限のフェデレーテッド再学習を実施。
+- モデルに依存しないアプローチで、サーバーが初期情報集約後にクライアントの生データにアクセスする必要なし。
+
+## 結果
+- ベンチマークデータセットでの評価により、プライバシー保護（MIA成功率がランダムに近い、カテゴリー知識の消去）と高い性能（再学習ベンチマークに対して約0.9の正規化精度）を実現。
+- ターゲットバックドア攻撃シナリオにおいて、悪意のあるトリガーを効果的に無効化し、モデルの整合性を回復。
+
+## 限界 / 今後の展望
+- 提案手法は特定の条件下での評価に基づいており、異なるデータセットやシナリオでの一般化が必要。
+- より多様な攻撃シナリオに対する耐性を向上させるためのさらなる研究が求められる。
+- プライバシーと性能のトレードオフを最適化するための新たな手法の開発が期待される。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.19065v1.mp3" type="audio/mpeg" />
     </item>
   </channel>
 </rss>

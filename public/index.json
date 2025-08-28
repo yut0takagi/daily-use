@@ -1,11 +1,17 @@
 {
-  "updatedAt": "2025-08-28T05:32:47.052Z",
+  "updatedAt": "2025-08-28T05:41:48.647Z",
   "items": [
     {
       "slug": "20250828-2508.20096v1",
       "title": "CODA: Coordinating the Cerebrum and Cerebellum for a Dual-Brain Computer",
       "date": "2025-08-28T05:32:47.050Z",
       "path": "posts/20250828-2508.20096v1.md"
+    },
+    {
+      "slug": "20250828-2508.19065v1",
+      "title": "Tackling Federated Unlearning as a Parameter Estimation Problem",
+      "date": "2025-08-28T05:41:48.635Z",
+      "path": "posts/20250828-2508.19065v1.md"
     },
     {
       "slug": "20250828-2508.17924v1",
