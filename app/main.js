@@ -7,7 +7,8 @@ import { generateSummaryJa, generatePodcastScriptJa, synthesizeTtsMp3 } from './
 import { ensureRssTemplate, appendItemToRss } from './rss.js'
 import { maybePublishQiita } from './qiita.js'
 
-const ARXIV_QUERY = process.env.ARXIV_QUERY || 'cat:cs.LG'
+// Simpler default: AI field only. You can override via ARXIV_QUERY env/secret.
+const ARXIV_QUERY = process.env.ARXIV_QUERY || 'cat:cs.AI'
 // Backward compat: prefer ARXIV_POOL_SIZE, fallback to ARXIV_MAX
 const ARXIV_POOL_SIZE = parseInt(process.env.ARXIV_POOL_SIZE || process.env.ARXIV_MAX || '200', 10)
 const SITE_BASE_URL = process.env.SITE_BASE_URL || ''
