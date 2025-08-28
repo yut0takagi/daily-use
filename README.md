@@ -115,6 +115,7 @@ npm start
 - `PODCAST_TITLE` / `PODCAST_DESCRIPTION` / `PODCAST_AUTHOR` / `PODCAST_IMAGE_URL`: Podcast の各種メタ（iTunes拡張タグに反映）
 - `PODCAST_OWNER_NAME` / `PODCAST_OWNER_EMAIL`: 所有者情報（Spotifyの所有者確認に利用）。メールは有効な受信可能アドレスを設定。
 - `PODCAST_CATEGORY` / `PODCAST_SUBCATEGORY`: iTunes/Spotify のカテゴリ（プライマリは必須）。例: `Technology` / `Software How-To`。
+- `PODCAST_WEBSITE_URL`: 番組のWebサイトURL（RSSの `<channel><link>` に使用）。未設定時は `SITE_BASE_URL` を使用。
 - `QIITA_PUBLISH` / `QIITA_ACCESS_TOKEN` / `QIITA_TAGS` / `QIITA_PRIVATE` / `QIITA_TITLE_PREFIX`: Qiita 投稿制御
 
 `.env` を使う場合は `app/main.js` が `dotenv/config` を読み込むため、ファイルを置くだけでOKです。

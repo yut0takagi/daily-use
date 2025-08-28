@@ -20,6 +20,7 @@ const PODCAST_OWNER_NAME = process.env.PODCAST_OWNER_NAME || ''
 const PODCAST_OWNER_EMAIL = process.env.PODCAST_OWNER_EMAIL || ''
 const PODCAST_CATEGORY = process.env.PODCAST_CATEGORY || 'Technology'
 const PODCAST_SUBCATEGORY = process.env.PODCAST_SUBCATEGORY || ''
+const PODCAST_WEBSITE_URL = process.env.PODCAST_WEBSITE_URL || SITE_BASE_URL || 'https://example.com'
 const DEDUP_HISTORY = String(process.env.DEDUP_HISTORY || 'true').toLowerCase() !== 'false'
 const HISTORY_WINDOW_DAYS = parseInt(process.env.HISTORY_WINDOW_DAYS || '0', 10) // 0 = all time
 const ARXIV_RANDOM_MODE = (process.env.ARXIV_RANDOM_MODE || 'daily').toLowerCase() // 'daily' | 'true_random'
@@ -33,7 +34,7 @@ async function main() {
   const FORCE_RUN = String(process.env.FORCE_RUN || '').toLowerCase() === 'true'
 
   const siteTitle = PODCAST_TITLE
-  const siteLink = SITE_BASE_URL || 'https://example.com'
+  const siteLink = PODCAST_WEBSITE_URL
   const siteDescription = PODCAST_DESCRIPTION
   await ensureRssTemplate({ siteTitle, siteLink, siteDescription, author: PODCAST_AUTHOR, imageUrl: PODCAST_IMAGE_URL, owner: { name: PODCAST_OWNER_NAME, email: PODCAST_OWNER_EMAIL }, category: { primary: PODCAST_CATEGORY, sub: PODCAST_SUBCATEGORY } })
 

@@ -63,6 +63,10 @@ export async function ensureRssTemplate({ siteTitle, siteLink, siteDescription, 
   }
   // Update lastBuildDate
   xml = xml.replace(/<lastBuildDate>[^<]*<\/lastBuildDate>/, `<lastBuildDate>${toRfc2822()}</lastBuildDate>`)
+  // Update channel link if provided
+  if (siteLink) {
+    xml = xml.replace(/\n\s*<link>[^<]*<\/link>/, `\n    <link>${escapeXml(siteLink)}</link>`)
+  }
   await fs.writeFile(RSS_PATH, xml, 'utf8')
 }
 
