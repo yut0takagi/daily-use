@@ -1,0 +1,19 @@
+{
+  "name": "arxivcaster",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Automated arXiv to podcast pipeline (summary, script, TTS, RSS)",
+  "scripts": {
+    "start": "node app/main.js",
+    "run:once": "ARXIV_MAX=1 node app/main.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "fast-xml-parser": "^4.4.1",
+    "openai": "^4.56.0",
+    "dotenv": "^16.4.5"
+  }
+}

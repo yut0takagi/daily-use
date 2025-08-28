@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>ArxivCaster</title>
+    <link>https://example.com</link>
+    <description>Daily summaries of arXiv papers with podcast audio.</description>
+    <language>ja-jp</language>
+    <generator>ArxivCaster</generator>
+    <lastBuildDate>Thu, 28 Aug 2025 02:18:43 GMT</lastBuildDate>
+    <item>
+      <title>Predicting the Order of Upcoming Tokens Improves Language Modeling</title>
+      <link>https://&lt;your-github-pages-domain&gt;/posts/20250828.html</link>
+      <guid isPermaLink="false">arxivcaster-20250828</guid>
+      <pubDate>Thu, 28 Aug 2025 02:18:43 GMT</pubDate>
+      <description># 論文要約: Predicting the Order of Upcoming Tokens Improves Language Modeling
+
+## 背景
+- マルチトークン予測（MTP）は、次トークン予測（NTP）を改善するための補助目的として提案された。
+- MTPは標準的なNLPベンチマークで一貫した改善を示さず、パフォーマンスが劣ることが多い。
+
+## 課題
+- MTPの未来のトークンを正確に予測することは難易度が高く、補助損失としては適切ではない。
+
+## 手法
+- トークン順序予測（TOP）を提案し、モデルが今後のトークンを近接性に基づいて順序付けるように訓練。
+- 学習ランキング損失を使用し、MTPの複数のトランスフォーマーレイヤーに対して、TOPは単一の追加のアンエンベディングレイヤーのみを必要とする。
+- 340M、1.8B、7BパラメータのモデルをNTP、MTP、TOPの目的で事前訓練。
+
+## 結果
+- 8つの標準NLPベンチマークで、TOPはNTPおよびMTPを全体的に上回るパフォーマンスを示した。
+
+## 限界 / 今後の展望
+- TOPのアプローチは、特定のタスクにおいてどのように一般化されるかは未検証である。
+- 今後は、TOPの適用範囲を広げ、異なるNLPタスクにおける効果を検証することが求められる。
+- また、TOPのさらなる最適化や他のモデルアーキテクチャとの統合についても探求する必要がある。</description>
+      <enclosure url="https://&lt;your-github-pages-domain&gt;/episodes/20250828.mp3" type="audio/mpeg" />
+    </item>
+  </channel>
+</rss>
