@@ -18,6 +18,8 @@ const PODCAST_AUTHOR = process.env.PODCAST_AUTHOR || ''
 const PODCAST_IMAGE_URL = process.env.PODCAST_IMAGE_URL || (SITE_BASE_URL ? joinUrl(SITE_BASE_URL, 'cover.png') : '')
 const PODCAST_OWNER_NAME = process.env.PODCAST_OWNER_NAME || ''
 const PODCAST_OWNER_EMAIL = process.env.PODCAST_OWNER_EMAIL || ''
+const PODCAST_CATEGORY = process.env.PODCAST_CATEGORY || 'Technology'
+const PODCAST_SUBCATEGORY = process.env.PODCAST_SUBCATEGORY || ''
 const DEDUP_HISTORY = String(process.env.DEDUP_HISTORY || 'true').toLowerCase() !== 'false'
 const HISTORY_WINDOW_DAYS = parseInt(process.env.HISTORY_WINDOW_DAYS || '0', 10) // 0 = all time
 const ARXIV_RANDOM_MODE = (process.env.ARXIV_RANDOM_MODE || 'daily').toLowerCase() // 'daily' | 'true_random'
@@ -33,7 +35,7 @@ async function main() {
   const siteTitle = PODCAST_TITLE
   const siteLink = SITE_BASE_URL || 'https://example.com'
   const siteDescription = PODCAST_DESCRIPTION
-  await ensureRssTemplate({ siteTitle, siteLink, siteDescription, author: PODCAST_AUTHOR, imageUrl: PODCAST_IMAGE_URL, owner: { name: PODCAST_OWNER_NAME, email: PODCAST_OWNER_EMAIL } })
+  await ensureRssTemplate({ siteTitle, siteLink, siteDescription, author: PODCAST_AUTHOR, imageUrl: PODCAST_IMAGE_URL, owner: { name: PODCAST_OWNER_NAME, email: PODCAST_OWNER_EMAIL }, category: { primary: PODCAST_CATEGORY, sub: PODCAST_SUBCATEGORY } })
 
   const queries = ARXIV_QUERY.split('||').map((q) => q.trim()).filter(Boolean)
   console.log(`[arxiv] queries: ${queries.length} item(s), pool: ${ARXIV_POOL_SIZE}`)

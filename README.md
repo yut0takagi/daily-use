@@ -114,6 +114,7 @@ npm start
 - `OPENAI_TTS_VOICE`: TTS ボイス（既定 `alloy`）
 - `PODCAST_TITLE` / `PODCAST_DESCRIPTION` / `PODCAST_AUTHOR` / `PODCAST_IMAGE_URL`: Podcast の各種メタ（iTunes拡張タグに反映）
 - `PODCAST_OWNER_NAME` / `PODCAST_OWNER_EMAIL`: 所有者情報（Spotifyの所有者確認に利用）。メールは有効な受信可能アドレスを設定。
+- `PODCAST_CATEGORY` / `PODCAST_SUBCATEGORY`: iTunes/Spotify のカテゴリ（プライマリは必須）。例: `Technology` / `Software How-To`。
 - `QIITA_PUBLISH` / `QIITA_ACCESS_TOKEN` / `QIITA_TAGS` / `QIITA_PRIVATE` / `QIITA_TITLE_PREFIX`: Qiita 投稿制御
 
 `.env` を使う場合は `app/main.js` が `dotenv/config` を読み込むため、ファイルを置くだけでOKです。
@@ -148,6 +149,7 @@ npm start
 - カバー画像: `public/cover.png`（1400–3000px 四方、PNG/JPG、RGB）
 - 注意: Spotify/iTunesタグ（author/summary/image/owner/explicit）は `podcast.xml` に自動出力されます。
 - 技術要件: `<enclosure>` は `length` 属性（バイト数）が必須。本実装では生成MP3のバイト長を自動付与。GitHub Pages は HEAD/Range に対応しているためストリーミング要件も満たします。
+ - アートワーク要件（重要）: 3000×3000px 推奨（最低1400×1400）、JPG/PNG、RGB、72dpi。`PODCAST_IMAGE_URL` でURL指定（デフォルトは `SITE_BASE_URL/cover.png`）。
 
 ---
 
