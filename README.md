@@ -20,6 +20,7 @@
 - `public/posts/YYYYMMDD.md` — 記事（要約 + 台本全文 + audio 埋め込み）
 - `public/podcast.xml` — RSS フィード（毎回 `<item>` を追記）
 - `public/index.json` — サイト用の投稿一覧（自動再生成）
+- `public/cover.png` — Podcast のカバー画像（Spotify 等で使用）
 
 ---
 
@@ -98,10 +99,14 @@ npm start
 - `OPENAI_API_KEY`（必須）: OpenAI APIキー
 - `ARXIV_QUERY`: arXiv 検索クエリ（例: `cat:cs.LG`）
 - `ARXIV_MAX`: 一度に取得する最大件数（既定 1）
+- `ARXIV_POOL_SIZE`: ランダム選択用の取得プールサイズ（既定 200）
+- `ARXIV_RANDOM_MODE`: ランダムの種類（`daily` = 日替りで決まる固定乱数, `true_random` = 実行毎に変化）
 - `SITE_BASE_URL`: サイトのベースURL（RSSの`enclosure`/記事内リンクで使用）
 - `OPENAI_LLM_MODEL`: LLM モデル（既定 `gpt-4o-mini`）
 - `OPENAI_TTS_MODEL`: TTS モデル（既定 `gpt-4o-mini-tts`）
 - `OPENAI_TTS_VOICE`: TTS ボイス（既定 `alloy`）
+- `PODCAST_TITLE` / `PODCAST_DESCRIPTION` / `PODCAST_AUTHOR` / `PODCAST_IMAGE_URL`: Podcast の各種メタ（iTunes拡張タグに反映）
+- `QIITA_PUBLISH` / `QIITA_ACCESS_TOKEN` / `QIITA_TAGS` / `QIITA_PRIVATE` / `QIITA_TITLE_PREFIX`: Qiita 投稿制御
 
 `.env` を使う場合は `app/main.js` が `dotenv/config` を読み込むため、ファイルを置くだけでOKです。
 
@@ -126,6 +131,27 @@ npm start
 
 ---
 
+## Spotify への自動配信 🎧
+- 初回のみ、Spotify for Podcasters に RSS を登録（例: `https://<owner>.github.io/<repo>/podcast.xml`）。以降はRSS更新で自動反映。
+- 推奨設定（Secrets または `.env`）
+  - `PODCAST_TITLE`, `PODCAST_DESCRIPTION`, `PODCAST_AUTHOR`
+  - `PODCAST_IMAGE_URL`（未設定時は `SITE_BASE_URL/cover.png` を使用）
+- カバー画像: `public/cover.png`（1400–3000px 四方、PNG/JPG、RGB）
+- 注意: Spotify/iTunesタグ（author/summary/image/explicit）は `podcast.xml` に自動出力されます。
+
+---
+
+## Qiita へ毎回自動投稿 ✍️
+- 事前準備: Qiita アクセストークンを取得（Settings → Applications）
+- リポジトリ Secrets に登録:
+  - `QIITA_ACCESS_TOKEN`
+  - `QIITA_PUBLISH=true`（手動実行の入力でも可）
+  - 任意: `QIITA_TAGS`（例: `arxiv,podcast,ml`）, `QIITA_PRIVATE`, `QIITA_TITLE_PREFIX`
+- 動作: パイプラインが `public/posts/YYYYMMDD.md` を生成後、その内容を本文として `POST /api/v2/items` に投稿します。タイトルは `[ArxivCaster] {論文タイトル}` 形式（接頭辞は変更可）。
+- 重複回避: 同日スラッグのidempotencyは維持。`FORCE_RUN=true` で再実行した場合はQiitaにも再投稿される点に注意。
+
+---
+
 ## カスタマイズ 🧩
 - モデル変更: `.env` で `OPENAI_LLM_MODEL` / `OPENAI_TTS_MODEL` / `OPENAI_TTS_VOICE`
 - 対象カテゴリ変更: `.env` の `ARXIV_QUERY` を好みに調整
@@ -136,7 +162,7 @@ npm start
 ---
 
 ## 開発メモ 🛠
-- ローカル検証: `npm start`（`ARXIV_QUERY` を短く、`ARXIV_MAX=1` がおすすめ）
+- ローカル検証: `npm start`（`ARXIV_QUERY` を短く、`ARXIV_POOL_SIZE=50` など）
 - 単発試行: `npm run run:once`（環境変数で上書き可能）
 - 大量実行は避け、API利用ポリシーに留意してください
 

@@ -1,17 +1,25 @@
 import 'dotenv/config'
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { ensureDir, todaySlug, fileExists, joinUrl, assertEnv } from './utils.js'
+import { ensureDir, todaySlug, fileExists, joinUrl, assertEnv, seededRng, pickRandom } from './utils.js'
 import { searchArxiv } from './arxiv.js'
 import { generateSummaryJa, generatePodcastScriptJa, synthesizeTtsMp3 } from './llm.js'
 import { ensureRssTemplate, appendItemToRss } from './rss.js'
+import { maybePublishQiita } from './qiita.js'
 
 const ARXIV_QUERY = process.env.ARXIV_QUERY || 'cat:cs.LG'
-const ARXIV_MAX = parseInt(process.env.ARXIV_MAX || '1', 10)
+// Backward compat: prefer ARXIV_POOL_SIZE, fallback to ARXIV_MAX
+const ARXIV_POOL_SIZE = parseInt(process.env.ARXIV_POOL_SIZE || process.env.ARXIV_MAX || '200', 10)
 const SITE_BASE_URL = process.env.SITE_BASE_URL || ''
+const PODCAST_TITLE = process.env.PODCAST_TITLE || 'ArxivCaster'
+const PODCAST_DESCRIPTION = process.env.PODCAST_DESCRIPTION || 'Daily summaries of arXiv papers with podcast audio.'
+const PODCAST_AUTHOR = process.env.PODCAST_AUTHOR || ''
+const PODCAST_IMAGE_URL = process.env.PODCAST_IMAGE_URL || (SITE_BASE_URL ? joinUrl(SITE_BASE_URL, 'cover.png') : '')
+const ARXIV_RANDOM_MODE = (process.env.ARXIV_RANDOM_MODE || 'daily').toLowerCase() // 'daily' | 'true_random'
 
 async function main() {
-  const slug = todaySlug(new Date())
+  const now = new Date()
+  const slug = todaySlug(now)
   const postsDir = path.join('public', 'posts')
   const episodesDir = path.join('public', 'episodes')
   await ensureDir(postsDir)
@@ -24,21 +32,23 @@ async function main() {
     return
   }
 
-  const siteTitle = 'ArxivCaster'
+  const siteTitle = PODCAST_TITLE
   const siteLink = SITE_BASE_URL || 'https://example.com'
-  const siteDescription = 'Daily summaries of arXiv papers with podcast audio.'
-  await ensureRssTemplate({ siteTitle, siteLink, siteDescription })
+  const siteDescription = PODCAST_DESCRIPTION
+  await ensureRssTemplate({ siteTitle, siteLink, siteDescription, author: PODCAST_AUTHOR, imageUrl: PODCAST_IMAGE_URL })
 
-  console.log(`[arxiv] query: ${ARXIV_QUERY}, max: ${ARXIV_MAX}`)
-  const entries = await searchArxiv({ query: ARXIV_QUERY, max: ARXIV_MAX })
+  console.log(`[arxiv] query: ${ARXIV_QUERY}, pool: ${ARXIV_POOL_SIZE}`)
+  const entries = await searchArxiv({ query: ARXIV_QUERY, max: ARXIV_POOL_SIZE })
   if (!entries.length) {
     console.log('No arXiv results')
     return
   }
 
-  // Take the first entry for today
-  const entry = entries[0]
-  console.log(`[paper] ${entry.title}`)
+  // Pick one entry randomly (deterministic per-day unless true_random)
+  const seedStr = ARXIV_RANDOM_MODE === 'true_random' ? null : `${slug}:${ARXIV_QUERY}`
+  const rnd = seedStr ? seededRng(seedStr) : Math.random
+  const { item: entry, index: chosen } = pickRandom(entries, rnd)
+  console.log(`[paper] pick #${chosen + 1}/${entries.length}: ${entry.title}`)
 
   // Ensure API key is present before LLM/TTS calls
   assertEnv('OPENAI_API_KEY')
@@ -58,7 +68,7 @@ async function main() {
   await fs.writeFile(postPath, md, 'utf8')
   console.log(`[post] wrote ${postPath}`)
 
-  const pubDate = new Date().toUTCString()
+  const pubDate = now.toUTCString()
   await appendItemToRss({
     title: entry.title,
     description: summaryJa,
@@ -72,6 +82,14 @@ async function main() {
   // Rebuild public index.json for the site
   await rebuildIndexJson(postsDir)
   console.log('[site] updated public/index.json')
+
+  // Optionally publish to Qiita
+  const canonicalUrl = SITE_BASE_URL ? joinUrl(SITE_BASE_URL, 'posts', `${slug}.html`) : ''
+  try {
+    await maybePublishQiita({ slug, entry, markdown: md, canonicalUrl })
+  } catch (e) {
+    console.warn(String(e))
+  }
 }
 
 function renderPostMarkdown({ slug, entry, summaryJa, scriptJa, audioUrl }) {

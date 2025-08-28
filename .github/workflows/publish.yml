@@ -14,6 +14,17 @@ on:
         required: false
         type: number
         default: 1
+      pool_size:
+        description: "ARXIV_POOL_SIZE: pool size to sample from"
+        required: false
+        type: number
+        default: 200
+      random_mode:
+        description: "ARXIV_RANDOM_MODE: 'daily' or 'true_random'"
+        required: false
+        type: choice
+        options: [daily, true_random]
+        default: daily
       site_base_url:
         description: "Override SITE_BASE_URL (optional)"
         required: false
@@ -28,6 +39,11 @@ on:
         required: false
         type: boolean
         default: true
+      qiita_publish:
+        description: "Publish to Qiita"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -58,8 +74,21 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ARXIV_QUERY: ${{ inputs.arxiv_query || secrets.ARXIV_QUERY }}
           ARXIV_MAX: ${{ inputs.arxiv_max || secrets.ARXIV_MAX || 1 }}
+          ARXIV_POOL_SIZE: ${{ inputs.pool_size || secrets.ARXIV_POOL_SIZE || 200 }}
           SITE_BASE_URL: ${{ inputs.site_base_url || secrets.SITE_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
           FORCE_RUN: ${{ inputs.force }}
+          ARXIV_RANDOM_MODE: ${{ inputs.random_mode || secrets.ARXIV_RANDOM_MODE || 'daily' }}
+          # Podcast metadata (improves Spotify/iTunes compatibility)
+          PODCAST_TITLE: ${{ secrets.PODCAST_TITLE || 'ArxivCaster' }}
+          PODCAST_DESCRIPTION: ${{ secrets.PODCAST_DESCRIPTION || 'Daily summaries of arXiv papers with podcast audio.' }}
+          PODCAST_AUTHOR: ${{ secrets.PODCAST_AUTHOR }}
+          PODCAST_IMAGE_URL: ${{ secrets.PODCAST_IMAGE_URL || (inputs.site_base_url && format('{0}/cover.png', inputs.site_base_url)) || (secrets.SITE_BASE_URL && format('{0}/cover.png', secrets.SITE_BASE_URL)) }}
+          # Qiita publishing
+          QIITA_PUBLISH: ${{ inputs.qiita_publish || secrets.QIITA_PUBLISH }}
+          QIITA_ACCESS_TOKEN: ${{ secrets.QIITA_ACCESS_TOKEN }}
+          QIITA_TAGS: ${{ secrets.QIITA_TAGS }}
+          QIITA_PRIVATE: ${{ secrets.QIITA_PRIVATE }}
+          QIITA_TITLE_PREFIX: ${{ secrets.QIITA_TITLE_PREFIX }}
         run: npm start
 
       - name: Upload Pages artifact

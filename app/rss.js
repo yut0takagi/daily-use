@@ -4,10 +4,11 @@ import { fileExists, toRfc2822 } from './utils.js'
 
 const RSS_PATH = path.join('public', 'podcast.xml')
 
-export async function ensureRssTemplate({ siteTitle, siteLink, siteDescription, language = 'ja-jp' }) {
+export async function ensureRssTemplate({ siteTitle, siteLink, siteDescription, language = 'ja-jp', author, imageUrl, explicit = 'false' }) {
   if (await fileExists(RSS_PATH)) return
+  const itunesNS = 'http://www.itunes.com/dtds/podcast-1.0.dtd'
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0" xmlns:itunes="${itunesNS}">
   <channel>
     <title>${escapeXml(siteTitle)}</title>
     <link>${escapeXml(siteLink)}</link>
@@ -15,6 +16,10 @@ export async function ensureRssTemplate({ siteTitle, siteLink, siteDescription, 
     <language>${language}</language>
     <generator>ArxivCaster</generator>
     <lastBuildDate>${toRfc2822()}</lastBuildDate>
+    ${author ? `<itunes:author>${escapeXml(author)}</itunes:author>` : ''}
+    ${siteDescription ? `<itunes:summary>${escapeXml(siteDescription)}</itunes:summary>` : ''}
+    ${imageUrl ? `<itunes:image href="${escapeXml(imageUrl)}" />` : ''}
+    <itunes:explicit>${explicit}</itunes:explicit>
   </channel>
 </rss>
 `
@@ -47,4 +52,3 @@ function escapeXml(s) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&apos;')
 }
-

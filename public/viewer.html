@@ -5,25 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ArxivCaster — Viewer</title>
     <style>
-      :root { --bg:#0b1020; --fg:#e6ebff; --muted:#9aa4c8; --panel:#0f1533e6; }
+      :root { --bg:#0a0b12; --fg:#f6f7fb; --muted:#9aa4c8; --panel:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); }
       html,body{height:100%;margin:0}
-      body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; color:var(--fg); background:var(--bg);}
-      canvas#fx{position:fixed;inset:0;z-index:-1;display:block}
-      header{max-width:860px;margin:16px auto 0;padding:16px}
-      a{color:#cfd8ff}
-      .wrap{max-width:860px;margin:0 auto 48px;padding:0 16px}
-      .paper{background:var(--panel); border:1px solid #263057; border-radius:12px; padding:18px; box-shadow:0 10px 30px #00000040}
-      .paper h1{margin:0 0 8px; font-size:24px}
+      body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial; color:var(--fg); background:var(--bg)}
+      .bg{position:fixed; inset:0; z-index:-2; background:
+        radial-gradient(1200px 800px at 20% -10%, #223066 0%, transparent 60%),
+        radial-gradient(900px 900px at 120% 0%, #3e2a7a 0%, transparent 60%),
+        radial-gradient(800px 600px at 80% 110%, #0f3b5f 0%, transparent 55%),
+        linear-gradient(180deg, #0a0b12 0%, #0a0b12 100%)}
+      .glow{position:fixed; inset:-20vh -20vw; z-index:-1; filter: blur(60px) saturate(120%); background: conic-gradient(from 0deg, #6ea8ff, #b388ff, #6ea8ff); opacity:.3; animation: spin 40s linear infinite}
+      @keyframes spin { to { transform: rotate(360deg) } }
+      header{max-width:860px;margin:16px auto 0;padding:16px 20px}
+      a{color:#e6eaff}
+      .wrap{max-width:860px;margin:0 auto 48px;padding:0 20px}
+      .paper{background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:22px; box-shadow:0 10px 30px #0006; backdrop-filter: blur(8px)}
+      .paper h1{margin:0 0 8px; font-size:28px; letter-spacing:-.02em}
       .paper .meta{color:var(--muted);font-size:13px;margin-bottom:12px}
-      .paper audio{width:100%; margin:8px 0 16px}
-      .md h2{margin:18px 0 8px}
-      .md p{line-height:1.7}
+      .paper audio{width:100%; margin:12px 0 20px}
+      .md h2{margin:22px 0 10px}
+      .md p{line-height:1.75}
       .md ul{padding-left:1.2em}
       .back{display:inline-block;margin-top:16px}
     </style>
   </head>
   <body>
-    <canvas id="fx"></canvas>
+    <div class="bg"></div>
+    <div class="glow" aria-hidden="true"></div>
     <header><a href="./">← 一覧へ</a></header>
     <div class="wrap">
       <div id="paper" class="paper">
@@ -31,41 +38,6 @@
       </div>
     </div>
     <script>
-      // Same noise background as index
-      (function(){
-        const c = document.getElementById('fx');
-        const ctx = c.getContext('2d');
-        let w,h, t=0; const scale=0.0025;
-        function rand(n){ const x=Math.sin(n)*43758.5453; return x-Math.floor(x); }
-        function hash(x,y){ return rand(x*374761393 + y*668265263); }
-        function lerp(a,b,t){ return a+(b-a)*t }
-        function smoothstep(t){ return t*t*(3-2*t) }
-        function noise2(x,y){
-          const xi=Math.floor(x), yi=Math.floor(y);
-          const xf=x-xi, yf=y-yi;
-          const a=hash(xi,yi), b=hash(xi+1,yi), c=hash(xi,yi+1), d=hash(xi+1,yi+1);
-          const u=smoothstep(xf), v=smoothstep(yf);
-          return lerp(lerp(a,b,u), lerp(c,d,u), v);
-        }
-        function resize(){ w=c.width=innerWidth; h=c.height=innerHeight }
-        addEventListener('resize', resize, {passive:true}); resize();
-        function draw(){
-          const img = ctx.createImageData(w,h); const data=img.data;
-          for(let y=0;y<h;y+=2){
-            for(let x=0;x<w;x+=2){
-              const n = noise2(x*scale, y*scale + t)*0.7 + noise2(x*scale*0.6, y*scale*0.6 + t*0.7)*0.3;
-              const r = 10 + n*15, g = 18 + n*40, b = 70 + n*90;
-              for(let dy=0;dy<2;dy++) for(let dx=0;dx<2;dx++){
-                const i=((y+dy)*w + (x+dx))*4; data[i]=r; data[i+1]=g; data[i+2]=b; data[i+3]=255;
-              }
-            }
-          }
-          ctx.putImageData(img,0,0);
-          t += 0.003; requestAnimationFrame(draw);
-        }
-        draw();
-      })();
-
       const params = new URLSearchParams(location.search);
       const slug = params.get('slug');
       if(!slug){ document.getElementById('paper').textContent='slugが指定されていません'; }
@@ -78,9 +50,11 @@
         const {meta, body} = splitFrontMatter(md);
         const html = markdownToHtml(body);
         const el = document.getElementById('paper');
+        const audioUrl = `episodes/${slug}.mp3`;
         el.innerHTML = `
           <h1>${escapeHtml(meta.title||slug)}</h1>
-          <div class="meta">${new Date(meta.date||Date.now()).toLocaleString('ja-JP')}</div>
+          <div class="meta">${new Date(meta.date||Date.now()).toLocaleString('ja-JP')}・${slug}</div>
+          <audio controls src="${audioUrl}"></audio>
           <div class="md">${html}</div>
           <a class="back" href="./">← 一覧へ戻る</a>
         `;
@@ -101,18 +75,14 @@
 
       function markdownToHtml(md){
         md = md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        // Headings
         md = md.replace(/^###\s+(.+)$/gm, '<h3>$1</h3>');
         md = md.replace(/^##\s+(.+)$/gm, '<h2>$1</h2>');
         md = md.replace(/^#\s+(.+)$/gm, '<h1>$1</h1>');
-        // Lists
         md = md.replace(/^(?:-\s+.+(?:\n|$))+?/gm, (block)=>{
           const items = block.trim().split(/\n/).map(l=>l.replace(/^-[\s]*/, '')).map(t=>`<li>${t}</li>`).join('');
           return `<ul>${items}</ul>`;
         });
-        // Audio tag passthrough (already in md)
         md = md.replace(/&lt;audio([\s\S]*?)&gt;&lt;\/audio&gt;/gm, '<audio$1></audio>');
-        // Paragraphs
         md = md.replace(/^(?!<h\d|<ul|<audio|<\/ul|<li)(.+)$/gm, '<p>$1</p>');
         return md;
       }
@@ -121,4 +91,3 @@
     </script>
   </body>
   </html>
-

@@ -51,3 +51,24 @@ export function joinUrl(base, ...parts) {
   return base.replace(/\/$/, '') + '/' + p
 }
 
+// Deterministic RNG based on string seed (mulberry32)
+export function seededRng(seedStr) {
+  let h = 2166136261 >>> 0
+  for (let i = 0; i < seedStr.length; i++) {
+    h ^= seedStr.charCodeAt(i)
+    h = Math.imul(h, 16777619)
+  }
+  let t = h >>> 0
+  return function () {
+    t += 0x6D2B79F5
+    let r = Math.imul(t ^ (t >>> 15), 1 | t)
+    r ^= r + Math.imul(r ^ (r >>> 7), 61 | r)
+    return ((r ^ (r >>> 14)) >>> 0) / 4294967296
+  }
+}
+
+export function pickRandom(arr, rnd = Math.random) {
+  if (!arr?.length) return { item: undefined, index: -1 }
+  const idx = Math.floor(rnd() * arr.length)
+  return { item: arr[idx], index: idx }
+}
