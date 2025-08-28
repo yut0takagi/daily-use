@@ -6,7 +6,7 @@
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Thu, 28 Aug 2025 04:49:46 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 05:01:27 GMT</lastBuildDate>
     <item>
       <title>Predicting the Order of Upcoming Tokens Improves Language Modeling</title>
       <link>https://&lt;your-github-pages-domain&gt;/posts/20250828.html</link>
@@ -96,6 +96,37 @@
 - CODAは特定の科学アプリケーションに特化しているため、他の分野への適用にはさらなる研究が必要。
 - 将来的には、異なるドメイン間でのより効果的な知識移転や、リアルタイムでの環境適応能力の向上が求められる。</description>
       <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.20096v1.mp3" type="audio/mpeg" />
+    </item>
+    <item>
+      <title>FlyMeThrough: Human-AI Collaborative 3D Indoor Mapping with Commodity
+  Drones</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.20034v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.20034v1</guid>
+      <pubDate>Thu, 28 Aug 2025 05:01:27 GMT</pubDate>
+      <description># FlyMeThrough: 人間とAIの共同による3D屋内マッピングシステム
+
+## 背景
+- 屋内マッピングデータは、ルーティング、ナビゲーション、建物管理において重要。
+- 大規模な屋内空間のデータ収集は、手作業とコストがかかるため、広く不足している。
+
+## 課題
+- 従来の屋内マッピング手法は、時間と労力がかかり、特に大規模施設では非効率的。
+- 屋内の重要なポイント（POI）の特定が手作業に依存している。
+
+## 手法
+- **FlyMeThrough**: コモディティドローンとフォトグラメトリを活用した屋内スキャンシステム。
+- 人間とAIが協力して、入口、トイレ、階段、エレベーターなどのPOIを注釈付けしながら、効率的に3D再構築を行う。
+
+## 結果
+- 12の異なる屋内空間でFlyMeThroughを評価。
+- 5人の建物管理者と5人の居住者を対象にした定性的ユーザースタディを実施。
+- FlyMeThroughは、戦略的な空間計画、リソース管理、ナビゲーションのために、効率的かつ正確に屋内3Dマップを作成できることが確認された。
+
+## 限界 / 今後の展望
+- 現在のシステムは、特定の環境条件や障害物に対する適応性に限界がある。
+- 今後の研究では、異なる屋内環境での精度向上や、リアルタイムでのデータ処理能力の向上が求められる。
+- また、ユーザーインターフェースの改善や、より多様なPOIの自動認識機能の追加も検討すべきである。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.20034v1.mp3" type="audio/mpeg" />
     </item>
   </channel>
 </rss>
