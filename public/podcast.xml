@@ -6,11 +6,12 @@
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Thu, 28 Aug 2025 05:56:50 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 06:34:57 GMT</lastBuildDate>
     <itunes:summary>AIエージェントに関する論文解説を行っています。</itunes:summary>
     <itunes:author>YutoTAKAGI</itunes:author>
     <itunes:image href="https://yut0takagi.github.io/daily-use/cover.png" />
     <itunes:explicit>false</itunes:explicit>
+    <itunes:category text="Technology" />
     <item>
       <title>Gaze into the Heart: A Multi-View Video Dataset for rPPG and Health
   Biomarkers Estimation</title>
@@ -131,6 +132,37 @@
 - 現在の研究には、生成AIの適用に関する限界が存在（例：データの多様性、シナリオの現実性）。
 - 今後の研究では、これらの限界を克服し、生成AIを活用したより効果的なテスト手法の開発が求められる。</description>
       <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.19882v1.mp3" type="audio/mpeg" length="2486400" />
+    </item>
+    <item>
+      <title>Incentivized Lipschitz Bandits</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.19466v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.19466v1</guid>
+      <pubDate>Thu, 28 Aug 2025 06:34:57 GMT</pubDate>
+      <description># Incentivized Lipschitz Bandits
+
+## 背景
+- 多腕バンディット（MAB）問題は、無限のアームを持つ設定での探索と利用のトレードオフを扱う。
+- 従来のモデルとは異なり、意思決定者（プリンシパル）が短期的なエージェントに報酬を与え、貪欲な選択を超えた探索を促す状況を考慮。
+
+## 課題
+- インセンティブによる報酬の偏り（リワードドリフト）が発生し、エージェントのフィードバックがバイアスされる。
+- 無限のアーム空間を均一に離散化し、探索アルゴリズムを設計する必要がある。
+
+## 手法
+- 新しいインセンティブ探索アルゴリズムを提案。
+- アーム空間を均一に離散化し、累積的な後悔と総補償を同時にサブリニアに達成。
+- 後悔と補償の境界を$\Tilde{O}(T^{d+1/d+2})$として導出（$d$はメトリック空間のカバリング次元）。
+- コンテキストバンディットへの一般化も行い、同様の性能保証を達成。
+
+## 結果
+- 提案したアルゴリズムは、理論的な結果を数値シミュレーションで検証。
+- サブリニアの後悔と補償を実現し、実用的なアプリケーションにおける有効性を示す。
+
+## 限界 / 今後の展望
+- 提案手法は特定のメトリック空間に依存しており、他の空間への適用可能性は未検討。
+- インセンティブ設計の複雑さや、エージェントの行動モデルの多様性に対する対応が必要。
+- 今後の研究では、異なるタイプのエージェントや環境におけるアルゴリズムの適用を探求することが求められる。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.19466v1.mp3" type="audio/mpeg" length="2555520" />
     </item>
   </channel>
 </rss>

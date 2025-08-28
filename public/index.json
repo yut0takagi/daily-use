@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2025-08-28T05:57:34.315Z",
+  "updatedAt": "2025-08-28T06:35:47.078Z",
   "items": [
     {
       "slug": "20250828-2508.20096v1",
@@ -12,6 +12,12 @@
       "title": "Generative AI for Testing of Autonomous Driving Systems: A Survey",
       "date": "2025-08-28T05:57:34.313Z",
       "path": "posts/20250828-2508.19882v1.md"
+    },
+    {
+      "slug": "20250828-2508.19466v1",
+      "title": "Incentivized Lipschitz Bandits",
+      "date": "2025-08-28T06:35:47.075Z",
+      "path": "posts/20250828-2508.19466v1.md"
     },
     {
       "slug": "20250828-2508.19065v1",
