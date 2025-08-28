@@ -16,6 +16,8 @@ const PODCAST_TITLE = process.env.PODCAST_TITLE || 'ArxivCaster'
 const PODCAST_DESCRIPTION = process.env.PODCAST_DESCRIPTION || 'Daily summaries of arXiv papers with podcast audio.'
 const PODCAST_AUTHOR = process.env.PODCAST_AUTHOR || ''
 const PODCAST_IMAGE_URL = process.env.PODCAST_IMAGE_URL || (SITE_BASE_URL ? joinUrl(SITE_BASE_URL, 'cover.png') : '')
+const PODCAST_OWNER_NAME = process.env.PODCAST_OWNER_NAME || ''
+const PODCAST_OWNER_EMAIL = process.env.PODCAST_OWNER_EMAIL || ''
 const DEDUP_HISTORY = String(process.env.DEDUP_HISTORY || 'true').toLowerCase() !== 'false'
 const HISTORY_WINDOW_DAYS = parseInt(process.env.HISTORY_WINDOW_DAYS || '0', 10) // 0 = all time
 const ARXIV_RANDOM_MODE = (process.env.ARXIV_RANDOM_MODE || 'daily').toLowerCase() // 'daily' | 'true_random'
@@ -31,7 +33,7 @@ async function main() {
   const siteTitle = PODCAST_TITLE
   const siteLink = SITE_BASE_URL || 'https://example.com'
   const siteDescription = PODCAST_DESCRIPTION
-  await ensureRssTemplate({ siteTitle, siteLink, siteDescription, author: PODCAST_AUTHOR, imageUrl: PODCAST_IMAGE_URL })
+  await ensureRssTemplate({ siteTitle, siteLink, siteDescription, author: PODCAST_AUTHOR, imageUrl: PODCAST_IMAGE_URL, owner: { name: PODCAST_OWNER_NAME, email: PODCAST_OWNER_EMAIL } })
 
   const queries = ARXIV_QUERY.split('||').map((q) => q.trim()).filter(Boolean)
   console.log(`[arxiv] queries: ${queries.length} item(s), pool: ${ARXIV_POOL_SIZE}`)
@@ -106,6 +108,7 @@ async function main() {
     title: entry.title,
     description: summaryJa,
     enclosureUrl: audioUrl,
+    enclosureLength: mp3Buf.length,
     pubDate,
     guid: `arxivcaster-${slug}`,
     link: SITE_BASE_URL ? `${joinUrl(SITE_BASE_URL, 'viewer.html')}?slug=${encodeURIComponent(slug)}` : entry.link,

@@ -4,10 +4,10 @@ import { fileExists, toRfc2822 } from './utils.js'
 
 const RSS_PATH = path.join('public', 'podcast.xml')
 
-export async function ensureRssTemplate({ siteTitle, siteLink, siteDescription, language = 'ja-jp', author, imageUrl, explicit = 'false' }) {
-  if (await fileExists(RSS_PATH)) return
+export async function ensureRssTemplate({ siteTitle, siteLink, siteDescription, language = 'ja-jp', author, imageUrl, explicit = 'false', owner }) {
   const itunesNS = 'http://www.itunes.com/dtds/podcast-1.0.dtd'
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  if (!(await fileExists(RSS_PATH))) {
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="${itunesNS}">
   <channel>
     <title>${escapeXml(siteTitle)}</title>
@@ -19,14 +19,41 @@ export async function ensureRssTemplate({ siteTitle, siteLink, siteDescription, 
     ${author ? `<itunes:author>${escapeXml(author)}</itunes:author>` : ''}
     ${siteDescription ? `<itunes:summary>${escapeXml(siteDescription)}</itunes:summary>` : ''}
     ${imageUrl ? `<itunes:image href="${escapeXml(imageUrl)}" />` : ''}
+    ${owner?.email ? `<itunes:owner><itunes:name>${escapeXml(owner.name || '')}</itunes:name><itunes:email>${escapeXml(owner.email)}</itunes:email></itunes:owner>` : ''}
     <itunes:explicit>${explicit}</itunes:explicit>
   </channel>
 </rss>
 `
+    await fs.writeFile(RSS_PATH, xml, 'utf8')
+    return
+  }
+  let xml = await fs.readFile(RSS_PATH, 'utf8')
+  if (!/xmlns:itunes=/.test(xml)) {
+    xml = xml.replace('<rss version="2.0">', `<rss version="2.0" xmlns:itunes="${itunesNS}">`)
+  }
+  if (author && !/<itunes:author>/.test(xml)) {
+    xml = xml.replace(/\n\s*<lastBuildDate>[^<]*<\/lastBuildDate>/, (m) => `${m}\n    <itunes:author>${escapeXml(author)}</itunes:author>`)
+  }
+  if (siteDescription && !/<itunes:summary>/.test(xml)) {
+    xml = xml.replace(/\n\s*<generator>[^<]*<\/generator>\n\s*<lastBuildDate>[^<]*<\/lastBuildDate>/, (m) => m + `\n    <itunes:summary>${escapeXml(siteDescription)}</itunes:summary>`)
+  }
+  if (imageUrl) {
+    if (/<itunes:image\b[^>]*>/.test(xml)) {
+      xml = xml.replace(/<itunes:image\b[^>]*>/, `<itunes:image href="${escapeXml(imageUrl)}" />`)
+    } else {
+      xml = xml.replace(/\n\s*<itunes:explicit>[^<]*<\/itunes:explicit>/, (m) => `\n    <itunes:image href="${escapeXml(imageUrl)}" />${m}`)
+    }
+  }
+  if (owner?.email && !/<itunes:owner>/.test(xml)) {
+    const ownerXml = `<itunes:owner><itunes:name>${escapeXml(owner.name || '')}</itunes:name><itunes:email>${escapeXml(owner.email)}</itunes:email></itunes:owner>`
+    xml = xml.replace(/\n\s*<itunes:explicit>[^<]*<\/itunes:explicit>/, (m) => `${m}\n    ${ownerXml}`)
+  }
+  // Update lastBuildDate
+  xml = xml.replace(/<lastBuildDate>[^<]*<\/lastBuildDate>/, `<lastBuildDate>${toRfc2822()}</lastBuildDate>`)
   await fs.writeFile(RSS_PATH, xml, 'utf8')
 }
 
-export async function appendItemToRss({ title, description, enclosureUrl, pubDate, guid, link }) {
+export async function appendItemToRss({ title, description, enclosureUrl, enclosureLength, pubDate, guid, link }) {
   let xml = await fs.readFile(RSS_PATH, 'utf8')
   // Insert before closing </channel></rss>
   const item = `    <item>
@@ -35,7 +62,7 @@ export async function appendItemToRss({ title, description, enclosureUrl, pubDat
       <guid isPermaLink="false">${escapeXml(guid)}</guid>
       <pubDate>${escapeXml(pubDate)}</pubDate>
       <description>${escapeXml(description)}</description>
-      <enclosure url="${escapeXml(enclosureUrl)}" type="audio/mpeg" />
+      <enclosure url="${escapeXml(enclosureUrl)}" type="audio/mpeg" length="${enclosureLength || 0}" />
     </item>
 `
   xml = xml.replace(/\n\s*<\/channel>\s*<\/rss>\s*$/s, (m) => `\n${item}  </channel>\n</rss>\n`)
