@@ -1,11 +1,17 @@
 {
-  "updatedAt": "2025-08-28T05:41:48.647Z",
+  "updatedAt": "2025-08-28T05:57:34.315Z",
   "items": [
     {
       "slug": "20250828-2508.20096v1",
       "title": "CODA: Coordinating the Cerebrum and Cerebellum for a Dual-Brain Computer",
       "date": "2025-08-28T05:32:47.050Z",
       "path": "posts/20250828-2508.20096v1.md"
+    },
+    {
+      "slug": "20250828-2508.19882v1",
+      "title": "Generative AI for Testing of Autonomous Driving Systems: A Survey",
+      "date": "2025-08-28T05:57:34.313Z",
+      "path": "posts/20250828-2508.19882v1.md"
     },
     {
       "slug": "20250828-2508.19065v1",

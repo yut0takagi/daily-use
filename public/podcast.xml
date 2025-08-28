@@ -6,7 +6,10 @@
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Thu, 28 Aug 2025 05:40:42 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 05:56:50 GMT</lastBuildDate>
+    <itunes:summary>AIエージェントに関する論文解説を行っています。</itunes:summary>
+    <itunes:author>YutoTAKAGI</itunes:author>
+    <itunes:image href="https://yut0takagi.github.io/daily-use/cover.png" />
     <itunes:explicit>false</itunes:explicit>
     <item>
       <title>Gaze into the Heart: A Multi-View Video Dataset for rPPG and Health
@@ -101,6 +104,33 @@
 - より多様な攻撃シナリオに対する耐性を向上させるためのさらなる研究が求められる。
 - プライバシーと性能のトレードオフを最適化するための新たな手法の開発が期待される。</description>
       <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.19065v1.mp3" type="audio/mpeg" />
+    </item>
+    <item>
+      <title>Generative AI for Testing of Autonomous Driving Systems: A Survey</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.19882v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.19882v1</guid>
+      <pubDate>Thu, 28 Aug 2025 05:56:50 GMT</pubDate>
+      <description># 背景
+- 自動運転システム（ADS）は、社会に大きな利益をもたらす可能性がある研究分野。
+- 公道での大規模な展開前に、様々な運転条件下での機能性と安全性を検証するための広範なテストが必要。
+
+# 課題
+- ADSの効果的かつ効率的なテストを実現することは、依然として未解決の課題。
+- 従来のテストアプローチでは、多様なシナリオをカバーすることが難しい。
+
+# 手法
+- 91件の関連研究を体系的に分析し、結果を6つの主要な応用カテゴリにまとめる。
+- 主にシナリオベースのテストに焦点を当て、生成AIの役割を深く理解することを目指す。
+- データセット、シミュレーター、評価指標、ベンチマークを広範にレビュー。
+
+# 結果
+- 生成AIは、文脈を解釈し、複雑なタスクを推論し、多様な出力を生成する能力により、ADSテストにおいて有望なツールであることが示された。
+- 27の制限事項が特定され、今後の研究の方向性が示唆された。
+
+# 限界 / 今後の展望
+- 現在の研究には、生成AIの適用に関する限界が存在（例：データの多様性、シナリオの現実性）。
+- 今後の研究では、これらの限界を克服し、生成AIを活用したより効果的なテスト手法の開発が求められる。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.19882v1.mp3" type="audio/mpeg" length="2486400" />
     </item>
   </channel>
 </rss>
