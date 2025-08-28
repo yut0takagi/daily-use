@@ -6,7 +6,38 @@
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Mon, 01 Jan 2000 00:00:00 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 05:20:51 GMT</lastBuildDate>
     <itunes:explicit>false</itunes:explicit>
+    <item>
+      <title>Gaze into the Heart: A Multi-View Video Dataset for rPPG and Health
+  Biomarkers Estimation</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.17924v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.17924v1</guid>
+      <pubDate>Thu, 28 Aug 2025 05:20:51 GMT</pubDate>
+      <description># 論文要約: Gaze into the Heart: A Multi-View Video Dataset for rPPG and Health Biomarkers Estimation
+
+## 背景
+- リモート光脈波計測（rPPG）の進展は、公開データセットの課題に制約されている。
+- 既存データセットは、サイズが小さい、プライバシーの懸念がある、条件の多様性が不足している。
+
+## 課題
+- 大規模かつ多様な条件下でのデータが不足しており、rPPGと健康バイオマーカーの推定に影響を及ぼしている。
+- 既存のデータセットでは、異なる環境や状況でのデータ収集が不十分。
+
+## 手法
+- 3600件の同期ビデオ録画を600人の被験者から収集。
+- さまざまな条件（安静時および運動後）で、複数の消費者向けカメラを使用して異なる角度から撮影。
+- 各録画は、100 HzのPPG信号や心電図、動脈血圧、バイオマーカー、体温、酸素飽和度、呼吸率、ストレスレベルなどの健康指標とペアリング。
+
+## 結果
+- 提案したデータセットを用いて効率的なrPPGモデルを訓練。
+- 既存のアプローチと比較し、クロスデータセットシナリオでのモデルの質を評価。
+
+## 限界 / 今後の展望
+- データセットのプライバシー管理や倫理的配慮が今後の課題。
+- 多様な人種や年齢層を考慮したさらなるデータ収集が必要。
+- 公開されたデータセットとモデルは、AI医療アシスタントの開発を加速する可能性があるが、実用化にはさらなる検証が求められる。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.17924v1.mp3" type="audio/mpeg" />
+    </item>
   </channel>
 </rss>
