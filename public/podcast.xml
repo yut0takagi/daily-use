@@ -6,7 +6,7 @@
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Thu, 28 Aug 2025 02:18:43 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 04:46:12 GMT</lastBuildDate>
     <item>
       <title>Predicting the Order of Upcoming Tokens Improves Language Modeling</title>
       <link>https://&lt;your-github-pages-domain&gt;/posts/20250828.html</link>
@@ -34,6 +34,38 @@
 - 今後は、TOPの適用範囲を広げ、異なるNLPタスクにおける効果を検証することが求められる。
 - また、TOPのさらなる最適化や他のモデルアーキテクチャとの統合についても探求する必要がある。</description>
       <enclosure url="https://&lt;your-github-pages-domain&gt;/episodes/20250828.mp3" type="audio/mpeg" />
+    </item>
+    <item>
+      <title>CODA: Coordinating the Cerebrum and Cerebellum for a Dual-Brain Computer
+  Use Agent with Decoupled Reinforcement Learning</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.20096v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.20096v1</guid>
+      <pubDate>Thu, 28 Aug 2025 04:46:12 GMT</pubDate>
+      <description># CODA: 脳と小脳を調整するデュアルブレインコンピュータエージェント
+
+## 背景
+- 自律エージェントは、科学計算などの専門分野でのGUIにおいて大きな課題に直面している。
+- 長期的な計画と精密な実行の両方が求められる。
+- 既存のアプローチは、一般的なエージェントは計画に優れるが実行が不十分であり、専門的なエージェントはその逆の弱点を持つ。
+
+## 課題
+- 現在の構成フレームワークは静的でトレーニング不可であり、経験からの適応が難しい。
+- 科学分野における高品質データの不足がこの問題をさらに悪化させている。
+
+## 手法
+- CODAは、一般的なプランナー（Cerebrum）と専門的なエグゼキューター（Cerebellum）を統合した新しいトレーニング可能な構成フレームワーク。
+- 二段階のパイプラインでトレーニングを実施：
+  1. **専門化**: 各科学アプリケーションのために、少量のタスク軌道から専門プランナーを訓練。
+  2. **一般化**: 専門家からの成功した軌道を集約し、最終プランナーのスーパーバイズドファインチューニングに使用。
+
+## 結果
+- ScienceBoardベンチマークの4つの挑戦的なアプリケーションで評価。
+- CODAはベースラインを大幅に上回り、オープンソースモデルの中で新たな最先端を確立。
+
+## 限界 / 今後の展望
+- CODAは特定の科学アプリケーションに依存しており、他のドメインへの適応性が今後の課題。
+- より多様なデータセットでの評価や、リアルタイム環境での実行能力の向上が期待される。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.20096v1.mp3" type="audio/mpeg" />
     </item>
   </channel>
 </rss>
