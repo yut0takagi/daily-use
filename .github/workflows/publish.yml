@@ -39,6 +39,11 @@ on:
         required: false
         type: boolean
         default: true
+      commit_output:
+        description: "Also commit generated public/ to repo for visibility"
+        required: false
+        type: boolean
+        default: false
       qiita_publish:
         description: "Publish to Qiita"
         required: false
@@ -95,6 +100,19 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: public
+
+      - name: Commit generated public/ (optional)
+        if: ${{ inputs.commit_output || secrets.COMMIT_OUTPUT == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: update generated public artifacts"
+            git push
+          else
+            echo "No changes to commit."
+          fi
 
   deploy:
     environment:

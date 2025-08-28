@@ -6,67 +6,60 @@
     <title>ArxivCaster — Daily Papers</title>
     <style>
       :root{
-        --bg: #0a0b12;
+        --bg: #000000;
         --fg: #f6f7fb;
         --muted:#9aa4c8;
         --card: rgba(255,255,255,0.06);
         --border: rgba(255,255,255,0.12);
-        --accent1:#7aa6ff;
-        --accent2:#b388ff;
+        --accent1:#82aaff;
+        --accent2:#c792ea;
       }
       *{box-sizing:border-box}
       html,body{height:100%;margin:0}
       body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial; color:var(--fg); background:var(--bg); overflow-x:hidden}
-      .bg{
-        position:fixed; inset:0; z-index:-2;
-        background:
-          radial-gradient(1200px 800px at 20% -10%, #223066 0%, transparent 60%),
-          radial-gradient(900px 900px at 120% 0%, #3e2a7a 0%, transparent 60%),
-          radial-gradient(800px 600px at 80% 110%, #0f3b5f 0%, transparent 55%),
-          linear-gradient(180deg, #0a0b12 0%, #0a0b12 100%);
-      }
-      .glow{
-        position:fixed; inset:-20vh -20vw; z-index:-1; filter: blur(60px) saturate(120%);
-        background: conic-gradient(from 0deg, #6ea8ff, #b388ff, #6ea8ff);
-        opacity:.3; animation: spin 40s linear infinite;
-      }
-      @keyframes spin { to { transform: rotate(360deg) } }
+      canvas#gl{position:fixed; inset:0; z-index:-2; display:block}
+      .overlay-grad{position:fixed; inset:0; z-index:-1; background: radial-gradient(1200px 800px at 50% 0%, rgba(130,170,255,.18), transparent 60%), radial-gradient(900px 900px at 90% 100%, rgba(199,146,234,.16), transparent 50%)}
 
-      .container{max-width:1100px; margin:0 auto; padding:24px 20px 80px}
+      .container{max-width:1200px; margin:0 auto; padding:28px 24px 100px}
       nav{display:flex; align-items:center; justify-content:space-between; padding:8px 0}
       nav .brand{font-weight:700; letter-spacing:.2px}
       nav a{color:var(--fg); opacity:.8; text-decoration:none}
       nav a:hover{opacity:1}
 
-      .hero{padding:48px 0 28px}
+      .hero{padding:80px 0 40px}
       .eyebrow{color:var(--muted); font-size:14px; letter-spacing:.12em; text-transform:uppercase}
-      .title{font-size:48px; line-height:1.04; margin:8px 0 12px; font-weight:800; letter-spacing:-.02em;
+      .title{font-size: clamp(48px, 8vw, 96px); line-height:1.02; margin:10px 0 16px; font-weight:900; letter-spacing:-.02em; text-wrap:balance;
         background: linear-gradient(90deg, var(--accent1), var(--accent2)); -webkit-background-clip:text; background-clip:text; color:transparent}
-      .lead{font-size:18px; color:#d5dcfd; max-width:760px}
-      .cta{margin-top:20px; display:flex; gap:12px}
-      .btn{display:inline-flex; gap:8px; align-items:center; padding:12px 16px; border-radius:999px; text-decoration:none; color:#0a0b12; background:#f7f9ff; font-weight:600}
+      .lead{font-size:20px; color:#d5dcfd; max-width:880px}
+      .cta{margin-top:24px; display:flex; gap:14px}
+      .btn{display:inline-flex; gap:8px; align-items:center; padding:14px 20px; border-radius:999px; text-decoration:none; color:#0a0b12; background:#f7f9ff; font-weight:700}
       .btn.secondary{background:transparent; color:#f7f9ff; border:1px solid var(--border)}
 
-      .latest{margin:40px 0 8px; padding:18px; border-radius:16px; border:1px solid var(--border); background:var(--card); backdrop-filter: blur(8px)}
-      .latest h3{margin:0 0 10px; font-size:18px}
-      .latest .meta{color:var(--muted); font-size:13px; margin-bottom:8px}
+      .latest{margin:48px 0 16px; padding:22px; border-radius:18px; border:1px solid var(--border); background:var(--card); backdrop-filter: blur(10px)}
+      .latest h3{margin:0 0 12px; font-size:20px}
+      .latest .meta{color:var(--muted); font-size:13px; margin-bottom:10px}
       .latest .actions{display:flex; gap:10px; margin-top:10px}
 
-      .section{margin:26px 0 8px; display:flex; align-items:baseline; justify-content:space-between}
-      .section h2{margin:0; font-size:20px}
-      .grid{display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-      .card{display:block; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px; text-decoration:none; color:inherit; transform: translateY(8px); opacity:0; transition: transform .4s ease, opacity .4s ease}
-      .card.reveal{transform: translateY(0); opacity:1}
-      .card h3{margin:0 0 10px; font-size:16px}
+      .section{margin:36px 0 12px; display:flex; align-items:baseline; justify-content:space-between}
+      .section h2{margin:0; font-size:22px}
+      .grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+      .card{display:block; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; text-decoration:none; color:inherit; transform: translateY(12px) scale(.98); opacity:0; transition: transform .6s cubic-bezier(.2,.8,.2,1), opacity .6s}
+      .card.reveal{transform: translateY(0) scale(1); opacity:1}
+      .card:hover{transform: translateY(-2px) scale(1.01)}
+      .card h3{margin:0 0 10px; font-size:18px}
       .card .meta{font-size:12px; color:var(--muted)}
 
-      footer{color:var(--muted); font-size:12px; padding:24px 0}
+      footer{color:var(--muted); font-size:12px; padding:28px 0}
       footer .row{display:flex; justify-content:space-between}
+
+      @media (prefers-reduced-motion: reduce){
+        canvas#gl{display:none}
+      }
     </style>
   </head>
   <body>
-    <div class="bg"></div>
-    <div class="glow" aria-hidden="true"></div>
+    <canvas id="gl"></canvas>
+    <div class="overlay-grad" aria-hidden="true"></div>
     <div class="container">
       <nav>
         <div class="brand">ArxivCaster</div>
@@ -75,8 +68,8 @@
 
       <section class="hero">
         <div class="eyebrow">Daily arXiv Podcast</div>
-        <h1 class="title">最新の研究を、美しく毎日に。</h1>
-        <p class="lead">厳選した arXiv の新着論文を日本語でわかりやすく。要約と台本を生成し、音声も自動で配信します。忙しい日々に、研究のインスピレーションを。</p>
+        <h1 class="title">黒の深みに漂う、<br/>ダイナミックな研究体験。</h1>
+        <p class="lead">AIエージェント関連の新着を毎日ピックアップ。要約と台本、音声まで自動生成し、美しいインターフェイスでお届けします。</p>
         <div class="cta">
           <a id="cta-latest" class="btn" href="#">最新エピソードを聴く</a>
           <a class="btn secondary" href="podcast.xml">RSS を登録</a>
@@ -108,6 +101,70 @@
     </div>
 
     <script>
+      // WebGL full-screen shader background (nebula-like fbm)
+      (function(){
+        const canvas = document.getElementById('gl');
+        const gl = canvas.getContext('webgl', { antialias: true, alpha: false });
+        if(!gl){ canvas.style.display='none'; return }
+        const vertSrc = `
+          attribute vec2 a;
+          void main(){ gl_Position = vec4(a,0.0,1.0); }
+        `;
+        const fragSrc = `
+          precision highp float;
+          uniform vec2 r; // resolution
+          uniform float t; // time
+          
+          float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453123); }
+          float noise(vec2 p){
+            vec2 i = floor(p), f = fract(p);
+            float a = hash(i);
+            float b = hash(i + vec2(1.0, 0.0));
+            float c = hash(i + vec2(0.0, 1.0));
+            float d = hash(i + vec2(1.0, 1.0));
+            vec2 u = f*f*(3.0-2.0*f);
+            return mix(a,b,u.x) + (c-a)*u.y*(1.0-u.x) + (d-b)*u.x*u.y;
+          }
+          float fbm(vec2 p){
+            float v = 0.0;
+            float a = 0.55;
+            for(int i=0;i<6;i++){
+              v += a * noise(p);
+              p = mat2(1.6,1.2,-1.2,1.6) * p + 0.07;
+              a *= 0.55;
+            }
+            return v;
+          }
+          void main(){
+            vec2 uv = (gl_FragCoord.xy / r.xy);
+            vec2 p = (gl_FragCoord.xy - 0.5*r.xy) / r.y;
+            float n = fbm(p*1.8 + vec2(t*0.06, -t*0.03));
+            float m = fbm(p*0.8 - vec2(t*0.02, t*0.01));
+            float v = smoothstep(0.2, 0.95, n*0.85 + m*0.35);
+            vec3 c1 = vec3(0.02, 0.04, 0.10);
+            vec3 c2 = vec3(0.18, 0.42, 0.86);
+            vec3 c3 = vec3(0.79, 0.57, 0.92);
+            vec3 col = mix(c1, c2, v);
+            col = mix(col, c3, smoothstep(0.7, 1.0, v));
+            float d = length(p);
+            col *= 1.0 - smoothstep(0.6, 1.2, d);
+            col = col * 1.25;
+            gl_FragColor = vec4(col, 1.0);
+          }
+        `;
+        function compile(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(s); return s }
+        const prog = gl.createProgram(); gl.attachShader(prog, compile(gl.VERTEX_SHADER, vertSrc)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fragSrc)); gl.linkProgram(prog); if(!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw gl.getProgramInfoLog(prog); gl.useProgram(prog);
+        const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,  1,-1, -1,1,  -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        const uR = gl.getUniformLocation(prog, 'r');
+        const uT = gl.getUniformLocation(prog, 't');
+        function resize(){ const dpr = Math.min(2, window.devicePixelRatio||1); canvas.width = Math.floor(innerWidth*dpr); canvas.height = Math.floor(innerHeight*dpr); canvas.style.width = innerWidth+'px'; canvas.style.height = innerHeight+'px'; gl.viewport(0,0,canvas.width, canvas.height); gl.uniform2f(uR, canvas.width, canvas.height) }
+        addEventListener('resize', resize, {passive:true}); resize();
+        let start = performance.now();
+        function frame(){ const tm = (performance.now()-start)/1000; gl.uniform1f(uT, tm); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(frame) }
+        frame();
+      })();
+
       async function loadIndex(){
         try{
           const res = await fetch('index.json');

@@ -5,16 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ArxivCaster — Viewer</title>
     <style>
-      :root { --bg:#0a0b12; --fg:#f6f7fb; --muted:#9aa4c8; --panel:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); }
+      :root { --bg:#000000; --fg:#f6f7fb; --muted:#9aa4c8; --panel:rgba(255,255,255,0.06); --border:rgba(255,255,255,0.12); }
       html,body{height:100%;margin:0}
       body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial; color:var(--fg); background:var(--bg)}
-      .bg{position:fixed; inset:0; z-index:-2; background:
-        radial-gradient(1200px 800px at 20% -10%, #223066 0%, transparent 60%),
-        radial-gradient(900px 900px at 120% 0%, #3e2a7a 0%, transparent 60%),
-        radial-gradient(800px 600px at 80% 110%, #0f3b5f 0%, transparent 55%),
-        linear-gradient(180deg, #0a0b12 0%, #0a0b12 100%)}
-      .glow{position:fixed; inset:-20vh -20vw; z-index:-1; filter: blur(60px) saturate(120%); background: conic-gradient(from 0deg, #6ea8ff, #b388ff, #6ea8ff); opacity:.3; animation: spin 40s linear infinite}
-      @keyframes spin { to { transform: rotate(360deg) } }
+      canvas#gl{position:fixed; inset:0; z-index:-2; display:block}
+      .overlay-grad{position:fixed; inset:0; z-index:-1; background: radial-gradient(1200px 800px at 50% 0%, rgba(130,170,255,.18), transparent 60%), radial-gradient(900px 900px at 90% 100%, rgba(199,146,234,.16), transparent 50%)}
       header{max-width:860px;margin:16px auto 0;padding:16px 20px}
       a{color:#e6eaff}
       .wrap{max-width:860px;margin:0 auto 48px;padding:0 20px}
@@ -29,8 +24,8 @@
     </style>
   </head>
   <body>
-    <div class="bg"></div>
-    <div class="glow" aria-hidden="true"></div>
+    <canvas id="gl"></canvas>
+    <div class="overlay-grad" aria-hidden="true"></div>
     <header><a href="./">← 一覧へ</a></header>
     <div class="wrap">
       <div id="paper" class="paper">
@@ -38,6 +33,23 @@
       </div>
     </div>
     <script>
+      // WebGL shader background (same as index)
+      (function(){
+        const canvas = document.getElementById('gl');
+        const gl = canvas.getContext('webgl', { antialias: true, alpha: false });
+        if(!gl){ canvas.style.display='none'; return }
+        const vertSrc = `attribute vec2 a;void main(){ gl_Position = vec4(a,0.0,1.0);} `;
+        const fragSrc = `precision highp float;uniform vec2 r;uniform float t;float hash(vec2 p){return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453123);}float noise(vec2 p){vec2 i=floor(p), f=fract(p);float a=hash(i);float b=hash(i+vec2(1.,0.));float c=hash(i+vec2(0.,1.));float d=hash(i+vec2(1.,1.));vec2 u=f*f*(3.-2.*f);return mix(a,b,u.x)+(c-a)*u.y*(1.-u.x)+(d-b)*u.x*u.y;}float fbm(vec2 p){float v=0., a=.55;for(int i=0;i<6;i++){v+=a*noise(p);p=mat2(1.6,1.2,-1.2,1.6)*p+0.07;a*=.55;}return v;}void main(){vec2 p=(gl_FragCoord.xy-0.5*r.xy)/r.y;float n=fbm(p*1.8+vec2(t*.06,-t*.03));float m=fbm(p*.8-vec2(t*.02,t*.01));float v=smoothstep(.2,.95,n*.85+m*.35);vec3 c1=vec3(.02,.04,.10), c2=vec3(.18,.42,.86), c3=vec3(.79,.57,.92);vec3 col=mix(c1,c2,v);col=mix(col,c3,smoothstep(.7,1.,v));float d=length(p);col*=1.-smoothstep(.6,1.2,d);col*=1.25;gl_FragColor=vec4(col,1.);} `;
+        function compile(type, src){ const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if(!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(s); return s }
+        const prog = gl.createProgram(); gl.attachShader(prog, compile(gl.VERTEX_SHADER, vertSrc)); gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fragSrc)); gl.linkProgram(prog); if(!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw gl.getProgramInfoLog(prog); gl.useProgram(prog);
+        const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(prog, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        const uR = gl.getUniformLocation(prog, 'r'); const uT = gl.getUniformLocation(prog, 't');
+        function resize(){ const dpr=Math.min(2,window.devicePixelRatio||1); canvas.width=Math.floor(innerWidth*dpr); canvas.height=Math.floor(innerHeight*dpr); canvas.style.width=innerWidth+'px'; canvas.style.height=innerHeight+'px'; gl.viewport(0,0,canvas.width,canvas.height); gl.uniform2f(uR, canvas.width, canvas.height) }
+        addEventListener('resize', resize, {passive:true}); resize(); let start=performance.now();
+        function frame(){ const tm=(performance.now()-start)/1000; gl.uniform1f(uT, tm); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(frame) } frame();
+      })();
+
       const params = new URLSearchParams(location.search);
       const slug = params.get('slug');
       if(!slug){ document.getElementById('paper').textContent='slugが指定されていません'; }
