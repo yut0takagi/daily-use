@@ -3,7 +3,31 @@ name: Pages
 on:
   schedule:
     - cron: '0 14 * * *' # JST 23:00
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      arxiv_query:
+        description: "Override ARXIV_QUERY (optional)"
+        required: false
+        type: string
+      arxiv_max:
+        description: "Override ARXIV_MAX (optional)"
+        required: false
+        type: number
+        default: 1
+      site_base_url:
+        description: "Override SITE_BASE_URL (optional)"
+        required: false
+        type: string
+      force:
+        description: "Force run even if today's post exists"
+        required: false
+        type: boolean
+        default: false
+      deploy:
+        description: "Deploy to Pages (disable for test runs)"
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -32,9 +56,10 @@ jobs:
       - name: Run pipeline (generate public/)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          ARXIV_QUERY: ${{ secrets.ARXIV_QUERY }}
-          ARXIV_MAX: ${{ secrets.ARXIV_MAX || 1 }}
-          SITE_BASE_URL: ${{ secrets.SITE_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+          ARXIV_QUERY: ${{ inputs.arxiv_query || secrets.ARXIV_QUERY }}
+          ARXIV_MAX: ${{ inputs.arxiv_max || secrets.ARXIV_MAX || 1 }}
+          SITE_BASE_URL: ${{ inputs.site_base_url || secrets.SITE_BASE_URL || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
+          FORCE_RUN: ${{ inputs.force }}
         run: npm start
 
       - name: Upload Pages artifact
@@ -54,4 +79,5 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
+        if: ${{ github.event_name != 'workflow_dispatch' || inputs.deploy }}
         uses: actions/deploy-pages@v4

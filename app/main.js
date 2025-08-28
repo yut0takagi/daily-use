@@ -18,7 +18,8 @@ async function main() {
   await ensureDir(episodesDir)
 
   const postPath = path.join(postsDir, `${slug}.md`)
-  if (await fileExists(postPath)) {
+  const FORCE_RUN = String(process.env.FORCE_RUN || '').toLowerCase() === 'true'
+  if (!FORCE_RUN && await fileExists(postPath)) {
     console.log(`[skip] Already published for ${slug}`)
     return
   }
