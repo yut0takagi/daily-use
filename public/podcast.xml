@@ -2,11 +2,11 @@
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
     <title>ArxivCaster</title>
-    <link>https://example.com</link>
+    <link>https://yut0takagi.github.io/daily-use/</link>
     <description>Daily summaries of arXiv papers with podcast audio.</description>
     <language>ja-jp</language>
     <generator>ArxivCaster</generator>
-    <lastBuildDate>Thu, 28 Aug 2025 06:34:57 GMT</lastBuildDate>
+    <lastBuildDate>Thu, 28 Aug 2025 06:52:56 GMT</lastBuildDate>
     <itunes:summary>AIエージェントに関する論文解説を行っています。</itunes:summary>
     <itunes:author>YutoTAKAGI</itunes:author>
     <itunes:image href="https://yut0takagi.github.io/daily-use/cover.png" />
@@ -163,6 +163,38 @@
 - インセンティブ設計の複雑さや、エージェントの行動モデルの多様性に対する対応が必要。
 - 今後の研究では、異なるタイプのエージェントや環境におけるアルゴリズムの適用を探求することが求められる。</description>
       <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.19466v1.mp3" type="audio/mpeg" length="2555520" />
+    </item>
+    <item>
+      <title>SLIM: Subtrajectory-Level Elimination for More Effective Reasoning</title>
+      <link>https://yut0takagi.github.io/daily-use/viewer.html?slug=20250828-2508.19502v1</link>
+      <guid isPermaLink="false">arxivcaster-20250828-2508.19502v1</guid>
+      <pubDate>Thu, 28 Aug 2025 06:52:56 GMT</pubDate>
+      <description># SLIM: Subtrajectory-Level Elimination for More Effective Reasoning
+
+## 背景
+- 近年、大規模言語モデルにおける複雑な推論能力が大幅に向上。
+- 特に、テスト時スケーリングの適用が効果的であることが示されている。
+- 推論過程で生成される長い推論軌跡の中には、必ずしも全ての要素が有効でないことがある。
+
+## 課題
+- 推論軌跡内の一部の要素が全体のパフォーマンスに悪影響を及ぼす可能性がある。
+- 効率的な推論のためには、最適でないサブトラジェクトリを特定し排除する必要がある。
+
+## 手法
+- 推論軌跡を個別のサブトラジェクトリに分割し、「5+2」フレームワークを開発。
+  - **5つの基準**に基づいてサブ最適なサブトラジェクトリを特定。
+  - サブ最適なサブトラジェクトリが後続の内容から独立しているかを評価。
+- サンプリングアルゴリズムを使用し、サブ最適なサブトラジェクトリを排除したデータを選定。
+
+## 結果
+- 推論時にサブ最適なサブトラジェクトリの数を25.9%削減。
+- Qwen2.5-Math-7Bモデルで、2/3の訓練データのみで58.92%の平均精度を達成。
+- 全データ使用時の58.06%を上回り、オープンソースデータセットよりも優れた結果を示す。
+
+## 限界 / 今後の展望
+- 本手法は特定の条件下での評価に基づいており、他のドメインへの適用可能性は未検証。
+- 今後は、異なるデータセットやモデルに対する汎用性を検証し、さらなる性能向上を目指す必要がある。</description>
+      <enclosure url="https://yut0takagi.github.io/daily-use/episodes/20250828-2508.19502v1.mp3" type="audio/mpeg" length="2813568" />
     </item>
   </channel>
 </rss>
